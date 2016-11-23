@@ -1,0 +1,42 @@
+{
+    "status": {
+        "code": 200,
+        "message": "获取数据成功"
+    },
+    "data": [
+
+        { "id":1, "pId":0, "name":"系统管理", "icon":"", "url":"", "moduleType":1, "child":[
+            { "id":21, "pId":2, "name":"设备管理", "icon":"", "url":"system/equipment","moduleType":0, "child": []},
+            { "id":22, "pId":2, "name":"用户信息", "icon":"", "url":"system/test","moduleType":0, "child": [
+                { "id":221, "pId":22, "name":"用户管理", "icon":"", "url":"system/user","moduleType":0, "child": []},
+                { "id":222, "pId":22, "name":"角色管理", "icon":"", "url":"system/role","moduleType":0, "child": []},
+                { "id":222, "pId":22, "name":"动态应用对象", "icon":"", "url":"system/receiveUser","moduleType":0, "child": []}
+            ]},
+            { "id":23, "pId":2, "name":"日志", "icon":"", "url":"system/test","moduleType":0, "child": [
+                { "id":231, "pId":23, "name":"日志查看", "icon":"", "url":"system/log","moduleType":0, "child": []},
+                { "id":232, "pId":23, "name":"日志统计", "icon":"", "url":"system/log-chart","moduleType":0, "child": []}
+            ]}
+        ]},
+
+        { "id":3, "pId":0, "name":"数据源管理", "icon":"", "url":"", "moduleType":0, "child":[
+            { "id":31, "pId":3, "name":"源地址管理", "icon":"icon-bd-list", "url":"dataManage/source","moduleType":0, "child": []},
+            { "id":31, "pId":3, "name":"目标地址管理", "icon":"icon-archives", "url":"dataManage/target","moduleType":0, "child": []}
+        ]},
+        
+        { "id":4, "pId":0, "name":"任务管理", "icon":"", "url":"", "moduleType":0, "child":[
+            { "id":41, "pId":4, "name":"监控", "icon":"icon-txt-search", "url":"task/task","moduleType":0, "child": []},
+            { "id":42, "pId":4, "name":"数据库提交", "icon":"icon-bd-o", "url":"task/database","moduleType":0, "child": []},
+            { "id":43, "pId":4, "name":"文件提交", "icon":"icon-txt-setting", "url":"task/fileSubmit","moduleType":0, "child": []},
+            { "id":44, "pId":4, "name":"文件选取", "icon":"icon-folder", "url":"task/fileSelection","moduleType":0, "child": []}
+        ]},
+        
+        { "id":4, "pId":0, "name":"配置管理", "icon":"", "url":"", "moduleType":0, "child":[
+            { "id":41, "pId":4, "name":"自定义字段", "icon":"icon-raxicon", "url":"configureManage/customField","moduleType":0, "child": []},
+            { "id":41, "pId":4, "name":"自定义数据", "icon":"icon-txt-search", "url":"configureManage/customData","moduleType":0, "child": []},
+            { "id":42, "pId":4, "name":"算法管理", "icon":"icon-txt-pen", "url":"configureManage/algorithmManage","moduleType":0, "child": []},
+            { "id":40, "pId":4, "name":"分类体系管理", "icon":"icon-category", "url":"configureManage/sensitiveClassManage","moduleType":0, "child": []},
+            { "id":43, "pId":4, "name":"策略管理", "icon":"icon-folder", "url":"configureManage/tacticsManage","moduleType":0, "child": []}
+        ]}
+
+    ]
+}
