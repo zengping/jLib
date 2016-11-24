@@ -131,10 +131,10 @@ define(function() {
 
     function load(url) {
         var self = this;
-        jLoad.xhr('GET', url, function(data) {
+        xhr('GET', url, function(data) {
             self.innerHTML = data;
 
-            jLoad.createJS(data);
+            createJS(data);
         });
     }
 
@@ -151,7 +151,7 @@ define(function() {
         };
     }
 
-    function createJS(str) {
+    function createJS(str, callback) {
         str = str.replace(/[\n\t\r]/g, '');
         var reg = new RegExp(/<script>(.*?)<\/script>/, 'g');
         if (reg.test(str)) {
@@ -165,11 +165,12 @@ define(function() {
             }
         }
 
-        jLoad.loadJS(str);
-
+        if (callback) {
+            callback(str);
+        }
     }
 
-    function loadJS(str) {
+    function loadJS(str, callback) {
         var reg = new RegExp(/<script src=\"(.*?)\"><\/script>/, 'g');
         if (reg.test(str)) {
             var jstr = str.match(/<script\ssrc\=\"(.*?)\">/g);
@@ -183,12 +184,28 @@ define(function() {
                 }
             }
         }
+
+        if (callback) {
+            callback(str);
+        }
+    }
+
+
+    //加载组件
+    function loadComponent(url) {
+        var self = this;
+        xhr('GET', "scripts/component/" + url + ".js", function(data) {
+            self.innerHTML = data;
+
+            createJS(data);
+        });
     }
 
     return {
         "publish": publish,
         "subscribe": subscribe,
         "tmpl": tmpl,
-        "ajax": ajax
+        "ajax": ajax,
+        "loadComponent": loadComponent
     };
 });

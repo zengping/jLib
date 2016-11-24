@@ -5,7 +5,7 @@ define(function() {
 
             window.onhashchange = function() {
                 var url = window.location.href;
-                var url_arr = url.match(/index\.html\#(.*?)$/);
+                var url_arr = url.match(/[index\.html|\/]\#(.*?)$/);
                 var viewUrl = url_arr ? url_arr[1] : "";
                 if (!viewUrl) {
                     viewUrl = "index/index";

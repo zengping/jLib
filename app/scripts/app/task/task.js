@@ -1,7 +1,11 @@
-define(["./tmpl", '../tmplEngine', '../viewEngine', '../jLibs', '../pagePlugin'], function(tmpl, tempEngine, vE, jLibs, pPlugin) {
+define(['../jLibs'], function(jLibs) {
 
-    function loadTmpl() {
-        appView.innerHTML = tmpl.page;
+    var t = {};
+
+    function init() {
+        appView.innerHTML = t.page;
+
+        loadTable();
     }
 
     function bindData(data) {
@@ -20,7 +24,6 @@ define(["./tmpl", '../tmplEngine', '../viewEngine', '../jLibs', '../pagePlugin']
     }
 
     function loadTable() {
-        // var table = tempEngine(tmpl.table);
 
         var ad = appData;
 
@@ -28,9 +31,6 @@ define(["./tmpl", '../tmplEngine', '../viewEngine', '../jLibs', '../pagePlugin']
 
             bindData(data);
 
-            pPlugin(data);
-
-            // $("#ControlTableBody").empty().html(table(data.content));
         });
     }
 
@@ -42,8 +42,27 @@ define(["./tmpl", '../tmplEngine', '../viewEngine', '../jLibs', '../pagePlugin']
         };
     }
 
-    return function() {
-        loadTmpl();
-        loadTable();
-    };
+    (function getTmpl() {
+        t.page = `
+            <div>
+                <ul>
+                    <li class="" j-for="v in data">
+                        <a class="sys-sidebar-item" href="javascript:void(0);">{{v.name}}</a>
+                        <ul class="sys-sidebar-child">
+                            <li class="" j-for="(key,val) in v.child" data-url="{{val.url}}">
+                                <a href="#{{val.url}}">
+                                    <i class="{{val.icon}}"></i>
+                                    {{val.name}}
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+
+            <button>to menu</button>
+        `;
+    })();
+
+    return init;
 });
