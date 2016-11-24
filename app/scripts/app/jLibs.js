@@ -16,8 +16,8 @@ define(function() {
     };
 
     //模板引擎
-    function tmpl(obj) {
-        var str = document.querySelector("[j-view]");
+    function tmpl(id, obj) {
+        var str = document.querySelector("#" + id);
         str = tmplCreateIf(str);
         str.innerHTML = str.innerHTML;
         tmplBindData(obj);
@@ -193,11 +193,15 @@ define(function() {
 
     //加载组件
     function loadComponent(url) {
-        var self = this;
-        xhr('GET', "scripts/component/" + url + ".js", function(data) {
-            self.innerHTML = data;
 
-            createJS(data);
+        var arr = url.split("/");
+        var component = document.querySelectorAll(arr[1]);
+
+        require(["./scripts/component/" + url], function(event) {
+
+            for (var i = 0; i < component.length; i++) {
+                event(component[i]);
+            }
         });
     }
 

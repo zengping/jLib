@@ -27,6 +27,7 @@ define(function() {
 
             // 查询菜单
             "INDEX_MENU": APP_DEV_ENV ? "./jsons/menu.json" : "./jsons/menu.json",
+            "COMPONENT_MENU": APP_DEV_ENV ? "./jsons/menu1.json" : "./jsons/menu1.json",
 
             // 
             "T_TASKIF": APP_DEV_ENV ? "./jsons/taskif/taskif.json" : "./jsons/taskif/taskif.json",

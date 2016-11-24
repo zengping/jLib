@@ -1,0 +1,31 @@
+{
+    "status": {
+        "code": 200,
+        "message": "获取数据成功"
+    },
+    "data": [
+
+        {
+            "id": 1,
+            "pId": 0,
+            "name": "首页",
+            "icon": "",
+            "url": "",
+            "moduleType": 1,
+            "child": []
+        },
+
+        {
+            "id": 3,
+            "pId": 0,
+            "name": "后台",
+            "icon": "",
+            "url": "manager/index",
+            "moduleType": 0,
+            "child": [
+                { "id": 31, "pId": 3, "name": "文章", "icon": "icon-bd-list", "url": "manager/post", "moduleType": 0, "child": [] },
+                { "id": 31, "pId": 3, "name": "插件", "icon": "icon-archives", "url": "manager/plugin", "moduleType": 0, "child": [] }
+            ]
+        }
+    ]
+}

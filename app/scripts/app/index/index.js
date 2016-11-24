@@ -9,10 +9,10 @@ define(['../jLibs'], function(jLibs) {
     }
 
     function bindData(data) {
-        jLibs.subscribe("menuDataBind", function(topic, data) {
-            jLibs.tmpl(data);
+        jLibs.subscribe("indexDataBind", function(topic, data) {
+            jLibs.tmpl('index', data);
         });
-        jLibs.publish("menuDataBind", {
+        jLibs.publish("indexDataBind", {
             name: "data",
             data: data
         });
@@ -36,12 +36,12 @@ define(['../jLibs'], function(jLibs) {
             event.stopPropagation();
         };
 
-        jLibs.loadComponent("menu/index");
+        jLibs.loadComponent("menu/menu");
     }
 
     (function getTmpl() {
         t.page = `
-            <div>
+            <div id="index">
                 <ul>
                     <li class="" j-for="v in data">
                         <a class="sys-sidebar-item" href="javascript:void(0);">{{v.name}}</a>

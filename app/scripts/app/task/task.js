@@ -10,7 +10,7 @@ define(['../jLibs'], function(jLibs) {
 
     function bindData(data) {
         jLibs.subscribe("taskDataBind", function(topic, data) {
-            jLibs.tmpl(data);
+            jLibs.tmpl('task', data);
         });
         jLibs.publish("taskDataBind", {
             name: "data",
@@ -44,7 +44,7 @@ define(['../jLibs'], function(jLibs) {
 
     (function getTmpl() {
         t.page = `
-            <div>
+            <div id="task">
                 <ul>
                     <li class="" j-for="v in data">
                         <a class="sys-sidebar-item" href="javascript:void(0);">{{v.name}}</a>

@@ -2,39 +2,40 @@ define(['../../app/jLibs'], function(jLibs) {
 
     var t = {};
 
-    function init() {
-        appView.innerHTML = t.page;
+    function init(ele) {
+
+        var eleP = ele.parentNode;
+        var nEle = document.createElement("div");
+        nEle.id = "menu";
+        nEle.innerHTML = t.page;
+        for (var i = 0; i < eleP.childNodes.length; i++) {
+            if (eleP.childNodes[i].outerHTML == "<menu></menu>") {
+                eleP.insertBefore(nEle, eleP.childNodes[i]);
+                eleP.removeChild(eleP.childNodes[i + 1]);
+            }
+        }
+
+        initData();
     }
 
     function bindData(data) {
         jLibs.subscribe("menuDataBind", function(topic, data) {
-            jLibs.tmpl(data);
+            jLibs.tmpl('menu', data);
         });
         jLibs.publish("menuDataBind", {
             name: "data",
             data: data
         });
-        loadEvent();
     }
 
-    function loadMenu() {
+    function initData() {
         var ad = appData;
 
         // TODO: 查询菜单
-        ad.selectMenu("INDEX_MENU", {}, function(data) {
+        ad.selectMenu("COMPONENT_MENU", {}, function(data) {
 
             bindData(data);
         });
-    }
-
-    function loadEvent() {
-        var button = document.querySelector("button");
-        button.onclick = function(event) {
-            location.href = "#task/task";
-            event.stopPropagation();
-        };
-
-        jLibs.loadComponent("menu/index");
     }
 
     (function getTmpl() {
@@ -54,9 +55,6 @@ define(['../../app/jLibs'], function(jLibs) {
                     </li>
                 </ul>
             </div>
-            <menu></menu>
-
-            <button>to menu</button>
         `;
     })();
 
