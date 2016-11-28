@@ -18,8 +18,10 @@ define(function() {
     //模板引擎
     function tmpl(id, obj) {
         var str = document.querySelector("#" + id);
-        str = tmplCreateIf(str);
-        str.innerHTML = str.innerHTML;
+        if (str) {
+            str = tmplCreateIf(str);
+            str.innerHTML = str.innerHTML;
+        }
         tmplBindData(obj);
     }
 
@@ -102,7 +104,7 @@ define(function() {
             str.replace(/[\r\t\n]/g, ' ')
             .replace(/"/g, '\\"')
             .replace(/&amp;/g, '&')
-            .replace(/{{each\s\((.*?)\,\s?(.*?)\)\sin\s(.*?)\s?}}/g, '");for(var $1 in $3){var $2=$3[$1];arr.push("')
+            .replace(/{{each\s?\((.*?)\,\s?(.*?)\)\sin\s(.*?)\s?}}/g, '");for(var $1 in $3){var $2=$3[$1];arr.push("')
             .replace(/{{each\s(.*?)\sin\s(.*?)\s?}}/g, '");for(var i in $2){var $1=$2[i];arr.push("')
             .replace(/{{\/each}}/g, '");}arr.push("')
             .replace(/{{if\s(.*?)\s?}}/g, '");if ($1) {arr.push("')
