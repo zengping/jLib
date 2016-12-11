@@ -1,25 +1,21 @@
 (function(win) {
-    //配置baseUrl
-    var baseUrl = document.getElementById('main').getAttribute('data-baseurl');
-
     /*
      * 文件依赖
      */
     var config = {
-        baseUrl: baseUrl,
+        baseUrl: './',
         paths: {
-            router: './scripts/router',
-            appData: "./scripts/app/appData"
+            jp: './scripts/jp',
+            router: './scripts/router'
         },
         shim: {}
     };
 
     require.config(config);
-    require(['router', 'appData'], function(router, appData) {
-        win.appView = document.querySelector('[j-view]'); //用于模块控制视图变化
-        win.appData = appData;
-        win.viewsChange = router; //监控views变化
-        viewsChange();
+    require(['jp', 'router'], function(jp, router) {
+        new jp({ el: '#banner', components: "./scripts/app/index/banner" });
+        // new jp({ el: '#left' });
+        new jp({ el: '#app', router: router });
     });
 
 

@@ -1,0 +1,77 @@
+{
+    "status": {
+        "code": 200,
+        "message": "获取数据成功"
+    },
+    "data": {
+        "totalRecord": 22,
+        "content": [
+            {
+                "id":111,
+                "taskCategory": 2,
+                "taskType": "静态",
+                "taskTypeId": 1,
+                "taskName": "人口基本信息表",
+                "submitUser": "张三",
+                "submitTime": "2016-03-16 12:00:00",
+                "completeTime": "2016-03-16 12:00:00",
+                "type": 2
+            },
+            {
+                "id":222,
+                "taskCategory": 1,
+                "taskType": "静态",
+                "taskTypeId": 1,
+                "taskName": "人口基本信息表",
+                "submitUser": "张三",
+                "submitTime": "2016-03-16 12:00:00",
+                "completeTime": "2016-03-16 12:00:00",
+                "type": 3
+            },
+            {
+                "id":333,
+                "taskCategory": 2,
+                "taskType": "静态",
+                "taskTypeId": 1,
+                "taskName": "人口基本信息表",
+                "submitUser": "张三",
+                "submitTime": "2016-03-16 12:00:00",
+                "completeTime": "2016-03-16 12:00:00",
+                "type": 4
+            },
+            {
+                "id":444,
+                "taskCategory": 1,
+                "taskType": "静态",
+                "taskTypeId": 1,
+                "taskName": "人口基本信息表",
+                "submitUser": "张三",
+                "submitTime": "2016-03-16 12:00:00",
+                "completeTime": "2016-03-16 12:00:00",
+                "type": 1
+            },
+            {
+                "id":555,
+                "taskCategory": 2,
+                "taskType": "动态",
+                "taskTypeId": 2,
+                "taskName": "人口基本信息表",
+                "submitUser": "刘亮",
+                "submitTime": "2016-03-16 12:00:00",
+                "completeTime": "2016-03-16 12:00:00",
+                "type": 2
+            },
+            {
+                "id":666,
+                "taskCategory": 1,
+                "taskType": "动态",
+                "taskTypeId": 2,
+                "taskName": "人口基本信息表",
+                "submitUser": "刘亮",
+                "submitTime": "2016-03-16 12:00:00",
+                "completeTime": "2016-03-16 12:00:00",
+                "type": 5
+            }
+        ]
+    }
+}

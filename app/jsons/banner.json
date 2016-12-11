@@ -1,0 +1,11 @@
+{
+    "status": {
+        "code": 200,
+        "message": "获取数据成功"
+    },
+    "data": {
+        "name": "john",
+        "age": "18",
+        "sex": "male"
+    }
+}
