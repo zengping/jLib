@@ -54,7 +54,7 @@
 
             window.onhashchange = function() {
                 var url = window.location.href;
-                var url_arr = url.match(/index\.html\#(.*?)$/);
+                var url_arr = url.match(/[index\.html|\/]\#(.*?)$/);
                 var viewUrl = url_arr ? url_arr[1] : "";
                 if (!viewUrl) {
                     viewUrl = "/";
@@ -65,6 +65,7 @@
                 require([router[viewUrl]], function(mod) {
                     appView.innerHTML = mod.tmpl;
                     runJS(mod.script);
+                    runCSS(mod.css);
                 });
             };
             onhashchange();
@@ -72,16 +73,40 @@
     }
 
     function runJS(str) {
+        if (!str) return;
         var f = new Function(str);
         var opts = f();
 
+        opts.data.$get = $get;
+        opts.data.$post = $post;
+        opts.data.$put = $put;
+        opts.data.$delete = $delete;
+        opts.data.$http = $http;
+        opts.data.$xhr = $xhr;
         if (opts.methods) {
-            opts.data.$get = $get;
             opts.methods.init && opts.methods.init.call(opts.data);
         }
         if (opts) {
             new jp(opts);
         }
+        if (opts.components) {
+            for (var i in opts.components) {
+                var opt = {
+                    el: i,
+                    components: opts.components[i]
+                }
+                loadComponents(opt);
+            }
+        }
+    };
+
+    function runCSS(str) {
+        if (!str) return;
+        var l = document.createElement('link');
+        l.href = str;
+        l.type = "text/css";
+        l.rel = "stylesheet";
+        document.head.appendChild(l);
     };
 
     // observer
@@ -296,6 +321,8 @@
         for: function(node, jp, exp) {
             var index = exp.lastIndexOf(" ");
             var dir = exp.substr(index + 1);
+            var arr = this._getArrVal(jp, dir);
+            console.log(arr);
             this.bind(node, jp, dir, 'for');
         },
 
@@ -317,6 +344,16 @@
             if (eventType && fn) {
                 node.addEventListener(eventType, fn.bind(jp), false);
             }
+        },
+
+        _getArrVal: function(jp, exp) {
+            var val = jp._data;
+            exp = exp.split('.');
+            exp.forEach(function(k) {
+                console.log(val[k]);
+                val = val[k];
+            });
+            return val;
         },
 
         _getVMVal: function(jp, exp) {
@@ -423,12 +460,24 @@
     function loadComponents(opts) {
         var appView = document.querySelector(opts.el);
         require([opts.components], function(mod) {
-            appView.innerHTML = mod.tmpl;
+            replaceEl(opts, mod.tmpl);
             runJS(mod.script);
+            runCSS(mod.css);
         });
     }
 
-    function xhr(method, url) {
+    function replaceEl(opts, t) {
+        var spanNode = document.createElement("span");
+        spanNode.innerHTML = t;
+        var fragment = document.createDocumentFragment();
+        fragment.appendChild(spanNode);
+        var newNode = fragment.querySelector("#" + opts.el);
+        var el = document.querySelector(opts.el);
+        var element = el.parentNode;
+        element.replaceChild(newNode, el);
+    }
+
+    function $xhr(method, url, params) {
         return new Promise(function(resolve, reject) {
             var xhr = new XMLHttpRequest();
             xhr.open(method, url);
@@ -442,7 +491,7 @@
             xhr.onerror = function() {
                 reject(Error("Network Error"));
             };
-            xhr.send();
+            xhr.send(params);
             // xhr.onreadystatechange = function() {
             //     if (xhr.readyState == 4 && xhr.status == 200) {
             //         if (callback) {
@@ -457,9 +506,9 @@
         });
     }
 
-    function $http(method, url) {
+    function $http(method, url, params) {
         return new Promise(function(resolve, reject) {
-            xhr(method, url).then(function(res) {
+            $xhr(method, url, params).then(function(res) {
                 var data = JSON.parse(res);
                 if (data.status.code == 200) {
                     resolve(data.data);
@@ -472,10 +521,60 @@
         });
     }
 
-    function $get(url) {
+    function $get(url, params) {
         return new Promise(function(resolve, reject) {
-            $http("GET", url).then(function(res) {
-                resolve(res);
+            $xhr("GET", url, params).then(function(res) {
+                var data = JSON.parse(res);
+                if (data.status.code == 200) {
+                    resolve(data.data);
+                } else {
+                    reject(Error(data.status.message));
+                }
+            }, function(err) {
+                console.error("Failed!", err);
+            });
+        });
+    }
+
+    function $post(url, params) {
+        return new Promise(function(resolve, reject) {
+            $xhr("POST", url, params).then(function(res) {
+                var data = JSON.parse(res);
+                if (data.status.code == 200) {
+                    resolve(data.data);
+                } else {
+                    reject(Error(data.status.message));
+                }
+            }, function(err) {
+                console.error("Failed!", err);
+            });
+        });
+    }
+
+    function $put(url, params) {
+        return new Promise(function(resolve, reject) {
+            $xhr("PUT", url, params).then(function(res) {
+                var data = JSON.parse(res);
+                if (data.status.code == 200) {
+                    resolve(data.data);
+                } else {
+                    reject(Error(data.status.message));
+                }
+            }, function(err) {
+                console.error("Failed!", err);
+            });
+        });
+    }
+
+    function $delete(url, params) {
+        return new Promise(function(resolve, reject) {
+            $xhr("DELETE", url, params).then(function(res) {
+                var data = JSON.parse(res);
+                if (data.status.code == 200) {
+                    resolve(data.data);
+                } else {
+                    reject(Error(data.status.message));
+                }
             }, function(err) {
                 console.error("Failed!", err);
             });

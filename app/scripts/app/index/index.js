@@ -2,7 +2,12 @@ define(function() {
 
     var template = `
         <div id="index">
-            <span j-on:click="btn">{{message}}</span>
+            <div class="sys-header" id="sys-header">
+                <headbar></headbar>
+            </div>
+
+            <div class="sys-main" id="sys-main">
+            </div>
         </div>
 
     `;
@@ -12,6 +17,9 @@ define(function() {
             data: {
                 message: "123"
             },
+            components: {
+                headbar: "./scripts/components/headbar"
+            },
             methods:{
                 btn:function(){
                     this.message = 5;
@@ -19,9 +27,11 @@ define(function() {
             }
         }
     `;
+    var css = "styles/style.css";
 
     return {
         "tmpl": template,
-        "script": script
+        "script": script,
+        "css": css
     };
 });
