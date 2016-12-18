@@ -77,16 +77,9 @@
         var f = new Function(str);
         var opts = f();
 
-        opts.data.$get = $get;
-        opts.data.$post = $post;
-        opts.data.$put = $put;
-        opts.data.$delete = $delete;
-        opts.data.$http = $http;
-        opts.data.$xhr = $xhr;
-        if (opts.methods) {
-            opts.methods.init && opts.methods.init.call(opts.data);
-        }
+        opts.data.$http = new $http();
         if (opts) {
+            opts.init && opts.init.call(opts.data);
             new jp(opts);
         }
         if (opts.components) {
@@ -321,8 +314,6 @@
         for: function(node, jp, exp) {
             var index = exp.lastIndexOf(" ");
             var dir = exp.substr(index + 1);
-            var arr = this._getArrVal(jp, dir);
-            console.log(arr);
             this.bind(node, jp, dir, 'for');
         },
 
@@ -344,16 +335,6 @@
             if (eventType && fn) {
                 node.addEventListener(eventType, fn.bind(jp), false);
             }
-        },
-
-        _getArrVal: function(jp, exp) {
-            var val = jp._data;
-            exp = exp.split('.');
-            exp.forEach(function(k) {
-                console.log(val[k]);
-                val = val[k];
-            });
-            return val;
         },
 
         _getVMVal: function(jp, exp) {
@@ -399,13 +380,31 @@
         },
 
         forUpdater: function(node, value) {
-            console.log(value);
-            var className = node.className;
-            className = className.replace(oldValue, '').replace(/\s$/, '');
-
-            var space = className && String(value) ? ' ' : '';
-
-            node.className = className + space + value;
+            var exp = node.getAttribute("j-for");
+            if (!exp) {
+                return;
+            }
+            node.removeAttribute("j-for");
+            var oldNode = node.outerHTML;
+            var str = "";
+            if (value) {
+                for (var i = 0; i < value.length; i++) {
+                    str += oldNode;
+                }
+            }
+            var fragment = document.createDocumentFragment();
+            var spanNode = document.createElement("span");
+            spanNode.innerHTML = str;
+            // var nodeName = node.nodeName;
+            // var nodeList = spanNode.querySelector(nodeName);
+            // console.log(nodeList);
+            // if (nodeList) {
+            //     for (var m = 0; m < nodeList.length; m++) {
+            //         fragment.appendChild(nodeList[m]);
+            //     }
+            // }
+            // console.log(fragment);
+            replaceEl(spanNode, node);
         },
 
         modelUpdater: function(node, value, oldValue) {
@@ -460,125 +459,62 @@
     function loadComponents(opts) {
         var appView = document.querySelector(opts.el);
         require([opts.components], function(mod) {
-            replaceEl(opts, mod.tmpl);
+            runEl(opts, mod.tmpl);
             runJS(mod.script);
             runCSS(mod.css);
         });
     }
 
-    function replaceEl(opts, t) {
+    function runEl(opts, t) {
         var spanNode = document.createElement("span");
         spanNode.innerHTML = t;
-        var fragment = document.createDocumentFragment();
-        fragment.appendChild(spanNode);
-        var newNode = fragment.querySelector("#" + opts.el);
-        var el = document.querySelector(opts.el);
-        var element = el.parentNode;
-        element.replaceChild(newNode, el);
+        var newNode = spanNode.querySelector("#" + opts.el);
+        var oldNode = document.querySelector(opts.el);
+        replaceEl(newNode, oldNode);
     }
 
-    function $xhr(method, url, params) {
-        return new Promise(function(resolve, reject) {
-            var xhr = new XMLHttpRequest();
-            xhr.open(method, url);
-            xhr.onload = function() {
-                if (xhr.status == 200) {
-                    resolve(xhr.response);
-                } else {
-                    reject(Error(xhr.statusText));
-                }
-            };
-            xhr.onerror = function() {
-                reject(Error("Network Error"));
-            };
-            xhr.send(params);
-            // xhr.onreadystatechange = function() {
-            //     if (xhr.readyState == 4 && xhr.status == 200) {
-            //         if (callback) {
-            //             callback(JSON.parse(xhr.responseText));
-            //         }
-            //         resolve(JSON.parse(xhr.responseText));
-            //     } else {
-            //         console.log(xhr.statusText);
-            //         reject(Error(xhr.statusText));
-            //     }
-            // };
-        });
+    function replaceEl(n, o) {
+        var element = o.parentNode;
+        element.replaceChild(n, o);
     }
 
-    function $http(method, url, params) {
-        return new Promise(function(resolve, reject) {
-            $xhr(method, url, params).then(function(res) {
-                var data = JSON.parse(res);
-                if (data.status.code == 200) {
-                    resolve(data.data);
-                } else {
-                    reject(Error(data.status.message));
-                }
-            }, function(err) {
-                console.error("Failed!", err);
+    function $http() {}
+
+    $http.prototype = {
+        $xhr: function(method, url, params) {
+            return new Promise(function(resolve, reject) {
+                var xhr = new XMLHttpRequest();
+                xhr.open(method, url);
+                xhr.onload = function() {
+                    if (xhr.status == 200) {
+                        var jsons = JSON.parse(xhr.responseText);
+                        if (jsons.status.code = 200) {
+                            resolve(jsons.data);
+                        } else {
+                            reject(Error(jsons.status.message));
+                        }
+                    } else {
+                        reject(Error(xhr.statusText));
+                    }
+                };
+                xhr.onerror = function() {
+                    reject(Error("Network Error"));
+                };
+                xhr.send(params);
             });
-        });
-    }
-
-    function $get(url, params) {
-        return new Promise(function(resolve, reject) {
-            $xhr("GET", url, params).then(function(res) {
-                var data = JSON.parse(res);
-                if (data.status.code == 200) {
-                    resolve(data.data);
-                } else {
-                    reject(Error(data.status.message));
-                }
-            }, function(err) {
-                console.error("Failed!", err);
-            });
-        });
-    }
-
-    function $post(url, params) {
-        return new Promise(function(resolve, reject) {
-            $xhr("POST", url, params).then(function(res) {
-                var data = JSON.parse(res);
-                if (data.status.code == 200) {
-                    resolve(data.data);
-                } else {
-                    reject(Error(data.status.message));
-                }
-            }, function(err) {
-                console.error("Failed!", err);
-            });
-        });
-    }
-
-    function $put(url, params) {
-        return new Promise(function(resolve, reject) {
-            $xhr("PUT", url, params).then(function(res) {
-                var data = JSON.parse(res);
-                if (data.status.code == 200) {
-                    resolve(data.data);
-                } else {
-                    reject(Error(data.status.message));
-                }
-            }, function(err) {
-                console.error("Failed!", err);
-            });
-        });
-    }
-
-    function $delete(url, params) {
-        return new Promise(function(resolve, reject) {
-            $xhr("DELETE", url, params).then(function(res) {
-                var data = JSON.parse(res);
-                if (data.status.code == 200) {
-                    resolve(data.data);
-                } else {
-                    reject(Error(data.status.message));
-                }
-            }, function(err) {
-                console.error("Failed!", err);
-            });
-        });
+        },
+        get: function(url, params) {
+            return this.$xhr('GET', url, params);
+        },
+        put: function(url, params) {
+            return this.$xhr('put', url, params);
+        },
+        post: function(url, params) {
+            return this.$xhr('post', url, params);
+        },
+        delete: function(url, params) {
+            return this.$xhr('delete', url, params);
+        }
     }
 
     function main(opts) {
