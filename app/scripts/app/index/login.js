@@ -35,8 +35,9 @@ define(function() {
         </div>
 
     `;
-    var script = `
-        return {
+
+    function script() {
+        var obj = {
             el: "#login",
             data: {
                 pdata: {
@@ -45,8 +46,8 @@ define(function() {
                     usbkey: ""
                 }
             },
-            methods:{
-                login:function(){
+            methods: {
+                login: function() {
                     var self = this;
                     self.$get("./jsons/onoff.json", self.pdata).then(function(data) {
                         if (data) {
@@ -58,12 +59,14 @@ define(function() {
                 }
             }
         }
-    `;
+        return obj;
+    }
+
     var css = "styles/style.css";
 
     return {
         "tmpl": template,
-        "script": script,
+        "script": script(),
         "css": css
     };
 });

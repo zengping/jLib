@@ -72,10 +72,7 @@
         }
     }
 
-    function runJS(str) {
-        if (!str) return;
-        var f = new Function(str);
-        var opts = f();
+    function runJS(opts) {
 
         opts.data.$http = new $http();
         if (opts) {
@@ -518,13 +515,14 @@
     }
 
     function main(opts) {
-        if (opts.router == undefined) {
-            if (opts.components) {
-                loadComponents(opts);
-            }
-            return;
+        if (typeof opts !== 'object') {
+            return false;
         }
-        router(opts);
+        if (opts.router !== undefined) {
+            router(opts);
+        } else {
+            router(opts);
+        }
     }
 
     return main;
